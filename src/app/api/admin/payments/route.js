@@ -52,7 +52,7 @@ export async function POST(request) {
       user: parsed.data.userId,
       subscription: parsed.data.subscriptionId || null,
       amount: parsed.data.amount,
-      currency: parsed.data.currency ?? "USD",
+      currency: parsed.data.currency ?? "Rupees",
       status: parsed.data.status ?? "paid",
       method: "manual",
       provider: "manual",

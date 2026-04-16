@@ -10,7 +10,7 @@ const planSchema = new mongoose.Schema(
     },
     durationDays: { type: Number, required: true, min: 1 },
     price: { type: Number, required: true, min: 0 },
-    currency: { type: String, default: "USD" },
+    currency: { type: String, default: "Rupees" },
     description: { type: String, default: "" },
     isActive: { type: Boolean, default: true },
   },

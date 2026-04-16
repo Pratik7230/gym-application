@@ -38,7 +38,7 @@ export async function POST(request) {
     await connectDB();
     const p = await Plan.create({
       ...parsed.data,
-      currency: parsed.data.currency ?? "USD",
+      currency: parsed.data.currency ?? "Rupees",
       isActive: parsed.data.isActive ?? true,
     });
     await logActivity({

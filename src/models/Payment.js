@@ -5,7 +5,7 @@ const paymentSchema = new mongoose.Schema(
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     subscription: { type: mongoose.Schema.Types.ObjectId, ref: "Subscription", default: null },
     amount: { type: Number, required: true, min: 0 },
-    currency: { type: String, default: "USD" },
+    currency: { type: String, default: "Rupees" },
     status: { type: String, enum: ["paid", "pending"], default: "paid" },
     method: { type: String, enum: ["manual"], default: "manual" },
     provider: { type: String, default: "manual" },

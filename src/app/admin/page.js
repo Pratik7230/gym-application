@@ -45,14 +45,14 @@ export default function AdminDashboardPage() {
       label: "Total revenue",
       value: Number(data.totalRevenue || 0).toLocaleString("en-US", {
         style: "currency",
-        currency: "USD",
+        currency: "INR",
       }),
     },
     {
       label: "Revenue this month",
       value: Number(data.monthRevenue || 0).toLocaleString("en-US", {
         style: "currency",
-        currency: "USD",
+        currency: "INR",
       }),
     },
   ];

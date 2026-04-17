@@ -35,7 +35,7 @@ export function DashboardShell({ title, nav, children }) {
       <div className="spot-grid pointer-events-none absolute inset-0 opacity-20" />
 
       <div className="relative mx-auto flex w-full max-w-[1700px] flex-col gap-4 p-3 md:flex-row md:p-6">
-        <aside className="glass-panel h-fit rounded-3xl p-3 md:sticky md:top-6 md:h-[calc(100vh-3rem)] md:w-72 md:p-4">
+        <aside className="glass-panel h-fit rounded-3xl p-3 md:sticky md:top-6 md:flex md:h-[calc(100vh-3rem)] md:w-72 md:flex-col md:overflow-hidden md:p-4">
           <div className="rounded-2xl border border-slate-900/10 bg-slate-50/80 p-4 dark:border-white/15 dark:bg-white/5">
             <p className="font-display text-4xl leading-none text-slate-900 dark:text-white">Iron Fitness</p>
             <p className="mt-2 text-xs font-semibold uppercase tracking-[0.2em] text-cyan-700 dark:text-cyan-200">
@@ -50,7 +50,7 @@ export function DashboardShell({ title, nav, children }) {
             <ThemeToggle />
           </div>
 
-          <nav className="mt-4 grid gap-1.5">
+          <nav className="mt-4 grid gap-1.5 md:min-h-0 md:flex-1 md:content-start md:overflow-y-auto md:pr-1">
             {nav.map((item) => (
               <Link key={item.href} href={item.href} className={linkClass(isActivePath(pathname, item.href))}>
                 <span>{item.label}</span>
@@ -59,7 +59,7 @@ export function DashboardShell({ title, nav, children }) {
             ))}
           </nav>
 
-          <div className="mt-4">
+          <div className="mt-4 md:mt-auto md:pt-3">
             <button
               type="button"
               onClick={logout}

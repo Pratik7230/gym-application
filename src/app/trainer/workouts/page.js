@@ -2,6 +2,26 @@
 
 import { useCallback, useEffect, useState } from "react";
 
+function parseWorkoutItems(linesText) {
+  return linesText
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      const [name, setsRaw, repsRaw, notesRaw] = line.split("|").map((x) => x.trim());
+      if (!name) return null;
+      const item = { name };
+      if (setsRaw) {
+        const sets = Number(setsRaw);
+        if (Number.isFinite(sets) && sets >= 0) item.sets = sets;
+      }
+      if (repsRaw) item.reps = repsRaw;
+      if (notesRaw) item.notes = notesRaw;
+      return item;
+    })
+    .filter(Boolean);
+}
+
 export default function TrainerWorkoutsPage() {
   const [items, setItems] = useState([]);
   const [clients, setClients] = useState([]);
@@ -9,9 +29,10 @@ export default function TrainerWorkoutsPage() {
   const [form, setForm] = useState({
     clientId: "",
     title: "",
-    items: [{ name: "Squat", sets: 3, reps: "10", notes: "" }],
+    items: [],
     progressNotes: "",
   });
+  const [workoutItemsText, setWorkoutItemsText] = useState("");
 
   const load = useCallback(async () => {
     const res = await fetch("/api/trainer/workouts", { credentials: "include" });
@@ -30,14 +51,23 @@ export default function TrainerWorkoutsPage() {
   async function create(e) {
     e.preventDefault();
     setError("");
+
+    const parsedItems = parseWorkoutItems(workoutItemsText);
+    if (parsedItems.length === 0) {
+      setError("Please add at least one workout item.");
+      return;
+    }
+
     const res = await fetch("/api/trainer/workouts", {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
+      body: JSON.stringify({ ...form, items: parsedItems }),
     });
     const data = await res.json();
     if (!res.ok) return setError(data.error || "Failed");
+    setForm({ clientId: "", title: "", items: [], progressNotes: "" });
+    setWorkoutItemsText("");
     load();
   }
 
@@ -77,6 +107,17 @@ export default function TrainerWorkoutsPage() {
             className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950"
           />
           <textarea
+            required
+            placeholder="Workout items (one per line): Name|Sets|Reps|Notes"
+            value={workoutItemsText}
+            onChange={(e) => setWorkoutItemsText(e.target.value)}
+            className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950"
+            rows={4}
+          />
+          <p className="text-xs text-zinc-500 dark:text-zinc-400">
+            Example: Squat|3|10|Keep core tight
+          </p>
+          <textarea
             placeholder="Progress notes"
             value={form.progressNotes}
             onChange={(e) => setForm((f) => ({ ...f, progressNotes: e.target.value }))}
@@ -109,7 +150,8 @@ export default function TrainerWorkoutsPage() {
             <ul className="mt-2 list-inside list-disc text-sm">
               {(w.items || []).map((it, i) => (
                 <li key={i}>
-                  {it.name} — {it.sets}x {it.reps}
+                  {it.name}
+                  {it.sets !== undefined || it.reps ? ` — ${it.sets ?? "-"}x ${it.reps ?? "-"}` : ""}
                 </li>
               ))}
             </ul>

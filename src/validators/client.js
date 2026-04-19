@@ -21,3 +21,14 @@ export const profileUpdateSchema = z.object({
   phone: z.string().optional(),
   avatarUrl: z.union([z.string().url(), z.literal("")]).optional(),
 });
+
+export const clientSubscriptionRazorpayOrderSchema = z.object({
+  planId: z.string().min(1),
+});
+
+export const clientSubscriptionRazorpayVerifySchema = z.object({
+  planId: z.string().min(1),
+  razorpayOrderId: z.string().min(1),
+  razorpayPaymentId: z.string().min(1),
+  razorpaySignature: z.string().min(1),
+});

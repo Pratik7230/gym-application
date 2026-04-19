@@ -1,5 +1,6 @@
 import { connectDB } from "@/lib/db.js";
 import Subscription from "@/models/Subscription.js";
+import Plan from "@/models/Plan.js";
 import { requireAuth } from "@/lib/auth/session.js";
 import { ROLES } from "@/constants/roles.js";
 import { jsonError } from "@/lib/errors.js";
@@ -9,12 +10,15 @@ export async function GET(request) {
   try {
     const { user } = await requireAuth(request, [ROLES.CLIENT]);
     await connectDB();
+    const plans = await Plan.find({})
+      .sort({ isActive: -1, price: 1, durationDays: 1, createdAt: -1 })
+      .lean();
     const sub = await Subscription.findOne({ user: user._id })
       .sort({ endDate: -1 })
       .populate("plan")
       .lean();
     if (!sub) {
-      return Response.json({ subscription: null, remainingDays: null, status: null });
+      return Response.json({ subscription: null, remainingDays: null, status: null, plans });
     }
     const days = remainingDays(sub.endDate);
     const status = computeCachedStatus(sub.endDate);
@@ -22,6 +26,7 @@ export async function GET(request) {
       subscription: sub,
       remainingDays: days,
       status,
+      plans,
     });
   } catch (e) {
     return jsonError(e);

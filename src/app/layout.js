@@ -19,6 +19,9 @@ const bebasNeue = Bebas_Neue({
 export const metadata = {
   title: "Iron Fitness — Gym Management",
   description: "Members, subscriptions, trainers, workouts, and attendance in one place",
+  icons: {
+    icon: "/icon.png",
+  },
 };
 
 export default function RootLayout({ children }) {
